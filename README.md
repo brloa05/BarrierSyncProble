@@ -22,7 +22,7 @@ sin esperar a que terminen. Como los hilos apenas empezaron, `resultado` vale `0
 
 ### Evidencia
 
-![Ejecución sin sincronización](img/punto2.png)
+![img.png](img.png)
 
 ### Resultado obtenido
 
@@ -32,7 +32,7 @@ El tiempo promedio de la ejecución fue de: 0
 
 ### ¿Por qué es incorrecto?
 
-El hilo principal no espera a que los hilos trabajadores terminen. Cuando llama
+El hilo principal no espera a que los hilos que trabajan terminen. Cuando llama
 `getResultado()`, los hilos aún están ejecutándose y su campo `resultado` no ha sido
 asignado, por lo que devuelve `0`. El promedio de veinte ceros es cero.
 
@@ -69,12 +69,12 @@ for (int i = 0; i < numHilos; i++) {
 
 ### Evidencia
 
-![Ejecución con sincronización](img/punto4.png)
+![img_1.png](img_1.png)
 
 ### Resultado obtenido
 
 ```
-El tiempo promedio de la ejecución fue de: XXXX
+El tiempo promedio de la ejecución fue de: 24184
 ```
 
 ### ¿Por qué es correcto ahora?
