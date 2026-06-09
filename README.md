@@ -1,55 +1,55 @@
-# Taller Sincronización — Patrón de Barrera
+# Synchronization Workshop — Barrier Pattern
 
-**Curso:** ARSW  
-**Estudiante:** Brayan Loaiza  
-
----
-
-## Descripción
-
-Este laboratorio implementa el patrón de sincronización por barrera en Java.
-El programa ejecuta N hilos que realizan una tarea a velocidades distintas.
-El objetivo es calcular el tiempo promedio de ejecución **solo cuando el último hilo haya terminado**.
+**Course:** ARSW  
+**Student:** Brayan Loaiza  
 
 ---
 
-## Punto 2 — Ejecución sin sincronización
+## Description
 
-### ¿Qué hace el programa original?
+This lab implements the barrier synchronization pattern in Java.
+The program runs N threads that perform the same task at different speeds.
+The goal is to calculate the average execution time **only after the last thread has finished**.
 
-El hilo principal inicia los 20 hilos y de inmediato intenta leer sus resultados,
-sin esperar a que terminen. Como los hilos apenas empezaron, `resultado` vale `0` en todos.
+---
 
-### Evidencia
+## Part 2 — Execution without synchronization
+
+### What does the original program do?
+
+The main thread starts all 20 threads and immediately tries to read their results
+without waiting for them to finish. Since the threads have just started, `resultado` is `0` in all of them.
+
+### Evidence
 
 ![img.png](img.png)
 
-### Resultado obtenido
+### Result obtained
 
 ```
 El tiempo promedio de la ejecución fue de: 0
 ```
 
-### ¿Por qué es incorrecto?
+### Why is it incorrect?
 
-El hilo principal no espera a que los hilos que trabajan terminen. Cuando llama
-`getResultado()`, los hilos aún están ejecutándose y su campo `resultado` no ha sido
-asignado, por lo que devuelve `0`. El promedio de veinte ceros es cero.
+The main thread does not wait for the worker threads to finish. When it calls
+`getResultado()`, the threads are still running and their `resultado` field has not been
+assigned yet, so it returns `0`. The average of twenty zeros is zero.
 
 ---
 
-## Punto 3 — Solución: sincronización por barrera con `join()`
+## Part 3 — Solution: barrier synchronization with `join()`
 
-Se agregó un segundo ciclo entre el `start()` y la lectura de resultados.
-Cada llamada a `hilos[i].join()` hace que el hilo principal se pause hasta que
-ese hilo termine su ejecución. El principal solo avanza cuando **todos** han terminado.
+A second loop was added between the `start()` call and the result collection.
+Each call to `hilos[i].join()` causes the main thread to pause until that thread
+finishes. The main thread only moves forward when **all** threads have completed.
 
 ```java
 for (int i = 0; i < numHilos; i++) {
     hilos[i].start();
 }
 
-// Barrera: espera a que todos los hilos terminen
+// Barrier: wait for all threads to finish
 for (int i = 0; i < numHilos; i++) {
     try {
         hilos[i].join();
@@ -65,28 +65,28 @@ for (int i = 0; i < numHilos; i++) {
 
 ---
 
-## Punto 4 — Verificación con sincronización
+## Part 4 — Verification with synchronization
 
-### Evidencia
+### Evidence
 
 ![img_1.png](img_1.png)
 
-### Resultado obtenido
+### Result obtained
 
 ```
 El tiempo promedio de la ejecución fue de: 24184
 ```
 
-### ¿Por qué es correcto ahora?
+### Why is it correct now?
 
-El hilo principal se bloquea en el ciclo de `join()` hasta que el último hilo
-termina. Solo entonces lee los valores de `resultado`, que ya han sido asignados
-correctamente por cada hilo al final de su ejecución.
+The main thread blocks at the `join()` loop until the last thread finishes.
+Only then does it read the `resultado` values, which have been correctly assigned
+by each thread at the end of its execution.
 
 ---
 
-## Conclusión
+## Conclusion
 
-El patrón de barrera garantiza que un punto de sincronización sea alcanzado por
-todos los participantes antes de continuar. En Java, `Thread.join()` es la
-implementación más directa de este patrón para un conjunto fijo de hilos.
+The barrier pattern ensures that a synchronization point is reached by all
+participants before continuing. In Java, `Thread.join()` is the most direct
+implementation of this pattern for a fixed set of threads.
